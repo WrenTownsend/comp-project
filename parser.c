@@ -502,7 +502,7 @@ int print_tree_r(node_t* node, int level, int stack, int is_last)
 			: printf("%lc%lc%lc%lc%lc",0x251C,0x2500,0x2500,0x2500,0x2500);
 		} else {
 			if(((stack >> i) & 1) == 1)
-				printf("%lc     ",0x2502);
+				printf("%lc    ",0x2502);
 			else
 				printf("     ");
 		}
