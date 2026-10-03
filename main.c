@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <locale.h>
 #include "lexer.h"
 #include "parser.h"
 
@@ -32,6 +33,8 @@ char* init_file(const char* file_name)
 }
 int main()
 {
+	setlocale(LC_ALL, "");
+
 	const char* file_name = "test/test.lang";
 	char* file = init_file(file_name);
 	if(file == NULL) {
@@ -68,7 +71,7 @@ int main()
 	node_t* tree = get_syntax_tree(lexer);
 
 	printf("\n### SYNTAX TREE ###\n");
-	print_tree(tree, 0, 0);
+	print_tree(tree);
 
 	free(lexer);
 	lexer = NULL;

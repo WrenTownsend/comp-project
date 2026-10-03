@@ -45,4 +45,4 @@ typedef struct node {
 } node_t;
 
 node_t* get_syntax_tree(lexer_t*);
-int print_tree(node_t*, int, int);
+int print_tree(node_t*);

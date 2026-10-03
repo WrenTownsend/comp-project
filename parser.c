@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
+// #include <wchar.h> //for utf-8
 #include "parser.h"
 #include "lexer.h"
 
@@ -493,25 +493,32 @@ int print_node(const node_t* node)
 	return 0;
 }
 
-int print_tree(node_t* node, int level, int stack)
+int print_tree_r(node_t* node, int level, int stack, int is_last)
 {
 	for(int i = 0; i < level; i++)
 		if(i+1 == level) {
-			printf("|----");
+			is_last \
+			? printf("%lc%lc%lc%lc%lc",0x2514,0x2500,0x2500,0x2500,0x2500) \
+			: printf("%lc%lc%lc%lc%lc",0x251C,0x2500,0x2500,0x2500,0x2500);
 		} else {
 			if(((stack >> i) & 1) == 1)
-				printf("|    ");
+				printf("%lc     ",0x2502);
 			else
 				printf("     ");
 		}
 	print_node(node);
-	printf(" ");
 	if(node->op.left) {
-		print_tree(node->op.left, level+1,\
-			node->op.right ? stack | 1 << level : stack);
+		print_tree_r(node->op.left, level+1,\
+			node->op.right ? stack | 1 << level : stack, \
+			node->op.right ? 0 : 1);
 	}
 	if(node->op.right) {
-		print_tree(node->op.right, level+1, stack & ~(1 << level) );
+		print_tree_r(node->op.right, level+1, stack & ~(1 << level), 1 );
 	}
+	return 0;
+}
+
+int print_tree(node_t* node) {
+	print_tree_r(node, 0, 0, 0);
 	return 0;
 }
