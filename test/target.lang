@@ -1,0 +1,14 @@
+fn main()
+{
+	var i;
+	var variable_name;
+	i = 4;
+	if(i == 4) {
+		i = 5;
+	}
+	while(i < 10) {
+		i = i + 1;
+	}
+	//comment
+	return;
+}
