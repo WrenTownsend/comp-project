@@ -1,6 +1,5 @@
 #include <stdlib.h>
 #include <stdio.h>
-// #include <wchar.h> //for utf-8
 #include "parser.h"
 #include "lexer.h"
 
@@ -29,7 +28,6 @@ node_t* id(lexer_t* l);
 node_t* int_lit(lexer_t* l);
 
 // ### new nodes ###
-
 node_t* new_node(node_type type, node_t* left, node_t* right)
 {
 	node_t* node = calloc(1, sizeof(node_t));
@@ -453,72 +451,4 @@ node_t* get_syntax_tree(lexer_t* lexer)
 		exit(1);
 	}
 	return root;
-}
-
-// ### display ###
-int print_node(const node_t* node)
-{
-	switch (node->type) {
-		case N_PROGRAM: printf("PROGRAM\n"); return 0;
-		case N_TOP_ELEMS: printf("TOP_ELEMS\n"); return 0;
-		case N_TOP_ELEM: printf("TOP_ELEM\n"); return 0;
-
-		case N_FUNC_DEF: printf("FUNC_DEF\n"); return 0;
-		case N_FUNC_SIG: printf("FUNC_SIG\n"); return 0;
-
-		case N_COMP_STMT: printf("COMP_STMT\n"); return 0;
-		case N_STMTS: printf("STMTS\n"); return 0;
-		case N_STMT: printf("STMT\n"); return 0;
-
-		case N_RETURN_STMT: printf("RETURN_STMT\n"); return 0;
-		case N_DECL_STMT: printf("DECL_STMT\n"); return 0;
-		case N_ASSIGN_STMT: printf("ASSIGN_STMT\n"); return 0;
-		case N_IF_STMT: printf("IF_STMT\n"); return 0;
-		case N_WHILE_STMT: printf("WHILE_STMT\n"); return 0;
-
-		case N_EXPR: printf("EXPR\n"); return 0;
-		case N_TERM: printf("TERM\n"); return 0;
-		case N_FACTOR: printf("FACTOR\n"); return 0;
-
-		case N_PLUS: printf("PLUS\n"); return 0;
-		case N_MINUS: printf("MINUS\n"); return 0;
-		case N_MULT: printf("MULT\n"); return 0;
-		case N_DIV: printf("DIV\n"); return 0;
-
-		case N_ID: printf("ID\n"); return 0;
-		case N_INT_LIT: printf("INT_LIT\n"); return 0;
-
-		default: printf("error: failed to print %d\n", node->type); return 1;
-	}
-	return 0;
-}
-
-int print_tree_r(node_t* node, int level, int stack, int is_last)
-{
-	for(int i = 0; i < level; i++)
-		if(i+1 == level) {
-			is_last \
-			? printf("%lc%lc%lc%lc%lc",0x2514,0x2500,0x2500,0x2500,0x2500) \
-			: printf("%lc%lc%lc%lc%lc",0x251C,0x2500,0x2500,0x2500,0x2500);
-		} else {
-			if(((stack >> i) & 1) == 1)
-				printf("%lc    ",0x2502);
-			else
-				printf("     ");
-		}
-	print_node(node);
-	if(node->op.left) {
-		print_tree_r(node->op.left, level+1,\
-			node->op.right ? stack | 1 << level : stack, \
-			node->op.right ? 0 : 1);
-	}
-	if(node->op.right) {
-		print_tree_r(node->op.right, level+1, stack & ~(1 << level), 1 );
-	}
-	return 0;
-}
-
-int print_tree(node_t* node) {
-	print_tree_r(node, 0, 0, 0);
-	return 0;
 }

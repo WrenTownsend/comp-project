@@ -146,48 +146,9 @@ int get_token(lexer_t* lexer)
 				break;
 			}
 			printf("error: couldn't find token (%c)\n", *p);
+			exit(1);
 			return 1;
 			break;
 	}
 	return 0;
 }
-
-int print_token(const token_t* token) 
-{
-	switch(token->type) {
-		//identifiers
-		case TK_ID: printf("ID: %s\n", token->content); return 0;
-		//keywords
-		case TK_FN: printf("FN\n"); return 0;
-		case TK_VAR: printf("VAR\n"); return 0;
-		case TK_IF: printf("IF\n"); return 0;
-		case TK_WHILE: printf("WHILE\n"); return 0;
-		case TK_RETURN: printf("RETURN\n"); return 0;
-		//delimiters
-		case TK_SEMICOLON: printf("SEMICOLON\n"); return 0;
-		case TK_COMMA: printf("COMMA\n"); return 0;
-		case TK_COLON: printf("COLON\n"); return 0;
-		case TK_DOT: printf("DOT\n"); return 0;
-		case TK_OPEN_PARAN: printf("OPEN_PARAN\n"); return 0;
-		case TK_CLOSE_PARAN: printf("CLOSE_PARAN\n"); return 0;
-		case TK_OPEN_BRACE: printf("OPEN_BRACE\n"); return 0;
-		case TK_CLOSE_BRACE: printf("CLOSE_BRACE\n"); return 0;
-		case TK_OPEN_BRACKET: printf("OPEN_BRACKET\n"); return 0;
-		case TK_CLOSE_BRACKET: printf("CLOSE_BRACKET\n"); return 0;
-		//operator
-		case TK_PLUS: printf("PLUS\n"); return 0;
-		case TK_EQ: printf("EQ\n"); return 0;
-		case TK_MULT: printf("MULT\n"); return 0;
-		case TK_DIV: printf("DIV\n"); return 0;
-
-		case TK_LT: printf("LT\n"); return 0;
-		case TK_ASSIGN: printf("ASSIGN\n"); return 0;
-		//literals
-		case TK_INT_LIT: printf("INT_LIT: %s\n", token->content); return 0;
-		//other
-		case TK_EOF: printf("EOF\n"); return 0;
-		case TK_NULL: printf("NULL\n"); return 0;
-		default: printf("error: failed to print %d\n", token->type); return 1;
-	}
-}
-

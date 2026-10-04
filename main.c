@@ -3,6 +3,7 @@
 #include <locale.h>
 #include "lexer.h"
 #include "parser.h"
+#include "debug.h"
 
 char* init_file(const char* file_name)
 {
@@ -34,6 +35,7 @@ char* init_file(const char* file_name)
 int main()
 {
 	setlocale(LC_ALL, "");
+	init_color();
 
 	const char* file_name = "test/test.lang";
 	char* file = init_file(file_name);
