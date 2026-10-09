@@ -3,6 +3,7 @@
 #include "debug.h"
 #include "lexer.h"
 #include "parser.h"
+#include "symbol_table.h"
 
 // color!!
 static _Bool color_enabled;
@@ -128,5 +129,14 @@ int print_tree_r(node_t* node, int level, int stack, int is_last)
 
 int print_tree(node_t* node) {
 	print_tree_r(node, 0, 0, 0);
+	return 0;
+}
+
+int print_table(table_t* table)
+{
+	printf("size: %d, capacity: %d\n", table->size, table->capacity);
+	for(int i = 0; i < table->size; i++) {
+		printf("id: %d, name: %s, type: %d\n", table->arr[i].id, table->arr[i].name, table->arr[i].type);
+	}
 	return 0;
 }

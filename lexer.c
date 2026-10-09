@@ -3,6 +3,7 @@
 #include <ctype.h>
 #include <string.h>
 #include "lexer.h"
+#include "symbol_table.h"
 
 lexer_t* lexer_init(char* file)
 {

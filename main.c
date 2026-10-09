@@ -3,6 +3,7 @@
 #include <locale.h>
 #include "lexer.h"
 #include "parser.h"
+#include "symbol_table.h"
 #include "debug.h"
 
 char* init_file(const char* file_name)
@@ -53,6 +54,9 @@ int main()
 		current_char = *read;
 	}
 
+	//init table
+	table_t* table = init_table();
+
 	printf("\n### TOKENS ###\n");
 	lexer_t* lexer = lexer_init(file);
 	while(lexer->token.type != TK_EOF) {
@@ -75,6 +79,12 @@ int main()
 	printf("\n### SYNTAX TREE ###\n");
 	print_tree(tree);
 
+	printf("\n### TABLE TEST ###\n");
+	create_entry(table, "test");
+	create_entry(table, "another_test");
+	print_table(table);
+
+	// TODO: also free the tree and table
 	free(lexer);
 	lexer = NULL;
 	return 0;

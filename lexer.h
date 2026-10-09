@@ -41,6 +41,7 @@ typedef enum {
 typedef struct {
 	token_type type;
 	char content[32];
+	int id; //id that points to the symbol table
 	char* start;
 	char* end; //incusive
 } token_t;
