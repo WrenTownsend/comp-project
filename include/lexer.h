@@ -1,5 +1,7 @@
 #pragma once
 
+#include "symbol_table.h"
+
 typedef enum {
 	//identifiers
 	TK_ID,
@@ -50,9 +52,10 @@ typedef struct {
 	char* file;
 	char* parse_point;
 	token_t token;
+	table_t* table;
 } lexer_t;
 
-lexer_t* lexer_init(char*);
+lexer_t* lexer_init(char*, table_t*);
 void lexer_reset(lexer_t*);
 int get_token(lexer_t*);
 int print_token(const token_t*);

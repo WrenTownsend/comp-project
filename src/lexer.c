@@ -5,12 +5,13 @@
 #include "lexer.h"
 #include "symbol_table.h"
 
-lexer_t* lexer_init(char* file)
+lexer_t* lexer_init(char* file, table_t* table)
 {
 	lexer_t* lexer = malloc(sizeof(lexer_t));
 	lexer->file = file;
 	lexer->parse_point = file;
 	lexer->token.type = TK_NULL;
+	lexer->table = table;
 	return lexer;
 }
 
@@ -21,6 +22,11 @@ void lexer_reset(lexer_t* lexer)
 	lexer->token.content[0] = '\0';
 }
 
+static int create_table_entry(lexer_t* lexer)
+{
+	lexer->token.id = create_entry(lexer->table, lexer->token.content);
+	return 0;
+}
 static int set_token(lexer_t* lexer, token_type token, char* start, char* end)
 {
 	
@@ -28,6 +34,7 @@ static int set_token(lexer_t* lexer, token_type token, char* start, char* end)
 	lexer->token.type = token;
 	lexer->token.start = start; //inclusive
 	lexer->token.end = end; //exclusive
+	lexer->token.id = -1;
 	return 0;
 }
 
@@ -143,6 +150,9 @@ int get_token(lexer_t* lexer)
 					}
 					lexer->token.content[i] = '\0';
 					set_token(lexer, lookup_keyword(lexer->token.content), p, p+i);
+					if(lexer->token.type == TK_ID) {
+						create_table_entry(lexer);
+					}
 				}
 				break;
 			}

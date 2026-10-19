@@ -1,5 +1,5 @@
-main: main.c lexer.c parser.c symbol_table.c debug.c
-	gcc -ggdb -o main main.c lexer.c parser.c symbol_table.c debug.c
+main: src
+	gcc -ggdb -Iinclude -o main src/*.c
 
 run: main
 	./main

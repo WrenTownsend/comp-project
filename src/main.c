@@ -38,7 +38,7 @@ int main()
 	setlocale(LC_ALL, "");
 	init_color();
 
-	const char* file_name = "test/test.lang";
+	const char* file_name = "tests/test.lang";
 	char* file = init_file(file_name);
 	if(file == NULL) {
 		printf("	at init_file\n");
@@ -58,7 +58,7 @@ int main()
 	table_t* table = init_table();
 
 	printf("\n### TOKENS ###\n");
-	lexer_t* lexer = lexer_init(file);
+	lexer_t* lexer = lexer_init(file, table);
 	while(lexer->token.type != TK_EOF) {
 		if(get_token(lexer)) {
 			printf("	at get_token\n");
@@ -80,8 +80,6 @@ int main()
 	print_tree(tree);
 
 	printf("\n### TABLE TEST ###\n");
-	create_entry(table, "test");
-	create_entry(table, "another_test");
 	print_table(table);
 
 	// TODO: also free the tree and table
