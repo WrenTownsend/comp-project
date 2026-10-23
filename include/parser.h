@@ -1,6 +1,7 @@
 #pragma once
 
 #include "lexer.h"
+#include "symbol_table.h"
 
 typedef enum {
 	N_PROGRAM,
@@ -46,5 +47,5 @@ typedef struct node {
 	};
 } node_t;
 
-node_t* get_syntax_tree(lexer_t*);
+node_t* get_syntax_tree(lexer_t*, table_t*);
 int print_tree(node_t*);

@@ -110,7 +110,7 @@ node_t* func_def(lexer_t* l)
 
 	return new_node(N_FUNC_DEF, left, right);
 }
-//<func_sig> -> "fn" ID "(" ")" TODO: implement <id_list>
+//<func_sig> -> "fn" <id> "(" ")" TODO: implement <id_list>
 node_t* func_sig(lexer_t* l)
 {
 	if(l->token.type != TK_FN) {
@@ -123,6 +123,7 @@ node_t* func_sig(lexer_t* l)
 		printf("error: expected ID after \"fn\" in <func_sig>\n");
 		exit(1);
 	}
+	// TODO: enter type into table
 
 	return new_node(N_FUNC_SIG, left, NULL);
 }
@@ -215,7 +216,7 @@ node_t* return_stmt(lexer_t* l) {
 	return new_terminal(N_RETURN_STMT);
 }
 
-//<decl_stmt> -> "var" "id" ";"
+//<decl_stmt> -> "var" <id> ";"
 node_t* decl_stmt(lexer_t* l) {
 	if(l->token.type != TK_VAR) {
 		return NULL;
@@ -227,6 +228,7 @@ node_t* decl_stmt(lexer_t* l) {
 		printf("error: expected ID after \"var\"\n");
 		exit(1);
 	}
+	// TODO: enter type into table
 
 	if(l->token.type != TK_SEMICOLON) {
 		printf("error: expected SEMICOLON after <decl_stmt>");
@@ -431,7 +433,7 @@ node_t* id(lexer_t* l) {
 		return new_terminal(N_ID);
 	}
 	return NULL;
-};
+}
 node_t* int_lit(lexer_t* l) {
 	if(l->token.type == TK_INT_LIT) {
 		get_token(l);
@@ -442,7 +444,7 @@ node_t* int_lit(lexer_t* l) {
 
 // ### main ###
 
-node_t* get_syntax_tree(lexer_t* lexer)
+node_t* get_syntax_tree(lexer_t* lexer, table_t* table)
 {
 	get_token(lexer);
 	node_t* root = program(lexer);

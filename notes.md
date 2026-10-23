@@ -1,24 +1,24 @@
 ## top level stuff
 <program> --> <top-elems> "eof"
 
-<top-elems> --> {<top-elem>}
+<top-elems> --> <top-elem> <top-elems>
 
 <top-elem> --> <func-def> | <top-declaration>
 
 ## function stuff
 <func-def> --> <func-signature> <compound-statement>
-<func-signature> --> "fn" ID "(" ")" TODO: implement <id_list>
+<func-signature> --> "fn" <ID> "(" ")" // TODO: implement <id_list>
 
 ## statments's
 <compound-statement> --> "{"<statments>"}"
 
-<statements> --> {<statement>}
+<statements> --> <statement> | <statement> <statements>
 
 ## statments
 <statement> --> <decl-stmt> | <if-stmt> | <while-stmt> | ...
 
-<decl-stmt> --> "var" "id" ";"
-<assign-stmt> --> "id" "=" <expr> ";"
+<decl-stmt> --> "var" <ID> ";"
+<assign-stmt> --> <ID> "=" <expr> ";"
 <if-stmt> --> "if" "(" <expr> ")" <compound-statement>
 <while-stmt> --> "while" "(" <expr> ")" <compound-statement>
 <return-stmt> --> "return" ";"
@@ -31,14 +31,14 @@
 <term> --> <factor> {("*"|"/") <factor>}
 
 
-<factor> --> ID | INT_LIT | "("<expr>")"
+<factor> --> <ID> | <INT_LIT> | "("<expr>")"
 
 ## terminal
 
-ID
-INT_LIT
+<ID>
+<INT_LIT>
 
-## test program ##
+## test program
 <program>
 	<top-elem>
 		<func-def>

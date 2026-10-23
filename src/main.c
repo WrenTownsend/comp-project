@@ -72,9 +72,12 @@ int main()
 
 	// cleanup
 	lexer_reset(lexer);
+	free(table->arr);
+	free(table);
+	table = init_table();
 
 	printf("\n### SYNTAX DEBUG ###\n");
-	node_t* tree = get_syntax_tree(lexer);
+	node_t* tree = get_syntax_tree(lexer, table);
 
 	printf("\n### SYNTAX TREE ###\n");
 	print_tree(tree);
