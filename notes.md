@@ -26,12 +26,11 @@
 <input-stmt> //todo
 
 ## Expression Rules (an expression is a thing that returns a value)
-<expr> --> <term> {("+"|"-") <term>}
+<expr> --> <term> "+" <expr> | <term> "-" <expr> | <term>
 
-<term> --> <factor> {("*"|"/") <factor>}
+<term> --> <factor> "*" <term> | <factor> "/" <term> | <factor>
 
-
-<factor> --> <ID> | <INT_LIT> | "("<expr>")"
+<factor> --> <ID> | <INT_LIT> | "(" <expr> ")"
 
 ## terminal
 

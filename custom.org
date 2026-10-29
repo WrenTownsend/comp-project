@@ -1,0 +1,27 @@
+#+title: Custom
+* structure
+rules are used by parser
+terminals are used by lexer
+
+* Rules
+element and result
+has | for multiple results
+results are a list of elements
+rules can only have 2 non terminal elements
+
+* terminals
+** literal charicters
+** Id / lits
+
+* how the rule is used
+** no | rules
+keep checking for things
+if don't find thing return null
+** one or more rules
+check for thing
+if don't find thing return null
+if find thing check for next thing
+if don't find thing return last thing
+** or rules
+* sudo code
+
