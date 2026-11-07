@@ -1,41 +1,39 @@
 #pragma once
 
+#include "lexer.h"
+
 // ### LEXER ###
 
 // ### PARSER ###
+typedef enum tag_c tag_c;
+typedef struct element_c element_c;
+typedef struct option_c option_c;
+typedef struct rule_c rule_c;
 
-// Tagged union for elements
-typedef enum {
+enum tag_c {
 	RULE,
 	TERMINAL,
-	LITERAL,
-} c_tag;
-typedef struct {
-	c_tag type;
+	NOTHING,
+}; 
+
+struct element_c {
+	tag_c type;
 	union {
-		c_rule rule;
-		c_terminal terminal;
-		c_literal literal;
+		token_type terminal;
+		rule_c* rule;
 	} data;
-} c_element;
+	element_c* next;
+};
 
-typedef struct {
-	char name[32];
-	int size;
-	c_element operands[32];
-} c_rule;
-typedef struct {
-	int size;
-	char string[32];
-} c_literal;
-typedef struct {
+struct option_c {
+	element_c* element_list;
+	option_c* next;
+};
 
-} c_terminal;
+struct rule_c {
+	option_c* option_list;
+	rule_c* next;
+};
 
-// List of rules
-typedef struct {
-	int size;
-	int capacity;
-	c_rule* arr;
-} rules_list;
-
+// functions
+rule_c* example_ebnf();

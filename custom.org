@@ -9,19 +9,157 @@ has | for multiple results
 results are a list of elements
 rules can only have 2 non terminal elements
 
-* terminals
+* terminals for parser
 ** literal charicters
 ** Id / lits
 
+* lexer
+** symbols
+** keywords
+** digit lits
+** Id's
+
 * how the rule is used
 ** no | rules
-keep checking for things
-if don't find thing return null
-** one or more rules
+check for first thing if not found return null
+check for next thing if not found throw error
+all things checked return new node
+example: assign_stmt, if_stmt
+** one or more rules (| options start with same token)
 check for thing
 if don't find thing return null
 if find thing check for next thing
 if don't find thing return last thing
+examples: stmts, top_elems
 ** or rules
-* sudo code
+check for things if something matches return new node
+if not return null
+examples: stmt,
+** rule
+check if first token is present if not return null
 
+* LL(1) parser rules
+thing = a, b | a, c | d, b | d, c
+this is impossible
+rule can only have one set of options with the same starting token
+
+if I dont allow multiple options and only use {} it solves this problem
+
+* sudo config code
+expr = term "+" expr | term "-" expr | term ;
+
+expr = term [ "+" expr | "-" expr ] ;
+term = factor "*" term | factor "/" | factor ;
+factor = "ID" | "INT_LIT" | "(" expr ")" ;
+
+* ebnf of the config
+rule = list_of_tokens, { "|", list_of_tokens }, [ optional ]
+list_of_tokens = token, { "," token }
+optional = token, "[",  "]"
+
+rule = token [ "[" ] { "|" token }
+* sudo parser code
+
+for every option {
+        if element matches {
+                next element
+                for every element in list of elements {
+                        if element matches {
+                                next element 
+                        } else {
+                                throw error "expected token after previous token"
+                        }
+                }
+                return new node
+        }
+}
+return no options found
+
+* structs
+
+- rule_list
+  - rule
+    - identifier
+    - option_list
+      - option
+        - terminal
+        - rule
+        - terminal
+        - ...  
+      - option
+        - rule
+        - terminal
+        - rhs //optional
+      - option
+      - ...
+
+* example ebnf()
+
+expr = term [ "+" expr | "-" expr ] ;
+// [] means a sub rule
+expr = term, expr1 ;
+        expr1 = "+", expr | "-", expr | e ;
+term = factor [ "*" term | "-" term ] ;
+factor = "ID" | "INT_LIT" | "(" expr ")" ;
+
+  - rule(expr)
+    - option
+      - element
+        - rule(term)
+      - element
+        - option //optional
+          - element
+            - terminal("+")
+            - rule(expr)
+          - element
+            - terminal("-")
+            - rule(expr)
+  - rule(term)
+    - option
+      - element
+        - rule(factor)
+      - element(optional)
+        - option
+          - element
+            - terminal("*")
+          - element
+            - rule(term)
+        - option 
+          - element
+            - terminal("/")
+          - element
+            - rule(term)
+  - rule(factor)
+    - option
+      - element
+        - terminal("ID")
+    - option
+      - element
+        - terminal("INT_LIT")
+    - option
+      - element
+        - terminal("(")
+      - element
+        - rule(expr)
+      - element
+        - terminal(")")
+* simplest possible ebnf
+other_rule = "("
+meta_rule = "(", rule, "EOF" | ")", "EOF"
+** tree
+- rule
+  - option
+    - element
+    - element // tagged optional
+      - option
+        - element
+      - option
+        - element
+- rule
+  - option
+    - element
+    - element
+    - element
+  - option
+    - element
+    - element
