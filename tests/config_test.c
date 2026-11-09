@@ -39,20 +39,22 @@ int main()
 	setlocale(LC_ALL, "");
 	init_color();
 
-	const char* file_name = "tests/ebnf_target.lang";
-	char* file = init_file(file_name);
+	const char* ebnf_file_name = "tests/ebnf_simple.lang";
+	char* file = init_file(ebnf_file_name);
 	if(file == NULL) {
 		printf("	at init_file\n");
 		return 1;
 	}
 
-	printf("### FILE ###\n");
-	char current_char = 1;
-	char* read = file;
-	while(current_char != '\0') {
-		printf("%c", *read);
-		read++;
-		current_char = *read;
+	printf("### EBNF FILE ###\n");
+	{
+		char current_char = 1;
+		char* read = file;
+		while(current_char != '\0') {
+			printf("%c", *read);
+			read++;
+			current_char = *read;
+		}
 	}
 
 	//init table
@@ -78,14 +80,38 @@ int main()
 	table = init_table();
 
 	printf("\n### LOAD EBNF ###\n");
-	/* rule_c* rules = example_ebnf(); */
 	rule_c* rules = parse_ebnf_file(lexer, table);
 	printf("parsed ebnf file\n");
+
+	printf("\n### LANGUAGE FILE ###\n");
+	const char* lang_file_name = "tests/ebnf_test.lang";
+	char* lang_file = init_file(lang_file_name);
+	if(file == NULL) {
+		printf("	at init_file\n");
+		return 1;
+	}
+
+	{
+		char current_char = 1;
+		char* read = lang_file;
+		while(current_char != '\0') {
+			printf("%c", *read);
+			read++;
+			current_char = *read;
+		}
+	}
+
+	// cleanup
+	free(table->arr);
+	free(table);
+	table = init_table();
+	lexer = lexer_init(lang_file, table);
 
 	printf("\n### CHECK SYNTAX ###\n");
         if (check_syntax(lexer, rules)) {
 		printf("syntax is correct!!!\n");
 	}
+
 	/* printf("\n### SYNTAX TREE ###\n"); */
 	/* print_tree(tree); */
 

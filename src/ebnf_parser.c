@@ -13,7 +13,7 @@ int check_element(lexer_t *l, element_c *element)
 		get_token(l);
 		return 1;
 	}
-        if (element->type == RULE && check_rule(l, element->data.rule)) {
+        if (element->type == RULE && check_rule(l, *element->data.rule)) {
 		return 1;
 	}
         if (element->type == NOTHING) {

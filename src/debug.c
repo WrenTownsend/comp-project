@@ -142,7 +142,7 @@ int print_table(table_t* table)
 {
 	printf("size: %d, capacity: %d\n", table->size, table->capacity);
 	for(int i = 0; i < table->size; i++) {
-		printf("id: %d, name: %s, type: %d\n", table->arr[i].id, table->arr[i].name, table->arr[i].type);
+		printf("id: %d, name: %s, content: %d\n", i, table->arr[i].name, table->arr[i].content);
 	}
 	return 0;
 }

@@ -1,10 +1,1 @@
-fn main
-{
-	id_test = 1 + 1 + id_2 + id__4;
-	if(1+3+2) {
-		return;
-	}
-	while(1*3*df+1) {
-		var sdf;
-	}
-}
+test

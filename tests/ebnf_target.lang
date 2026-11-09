@@ -1,7 +1,9 @@
 expr = term, sub_expr ;
-     sub_expr = "+", expr | "-", expr | "e" ;
+     sub_expr = "+", expr | "-", expr | "" ;
 
 term = factor, sub_term ;
-     sub_term = "*", term | "/", term | "e" ;
+     sub_term = "*", term | "/", term | "" ;
 
-factor = "ID" | "INT_LIT" | "(", expr, ")" ;
+factor = "test" | "234" ;
+
+

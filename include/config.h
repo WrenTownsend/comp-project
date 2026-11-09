@@ -1,6 +1,7 @@
 #pragma once
 
 #include "lexer.h"
+#include "symbol_table.h"
 
 // ### LEXER ###
 
@@ -20,7 +21,7 @@ struct element_c {
 	tag_c type;
 	union {
 		token_type terminal;
-		rule_c* rule;
+		rule_c** rule; //points to the entry in the config table
 	} data;
 	element_c* next;
 };
@@ -36,5 +37,4 @@ struct rule_c {
 };
 
 // functions
-rule_c* example_ebnf();
 rule_c* parse_ebnf_file(lexer_t*, table_t*);
