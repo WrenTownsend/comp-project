@@ -39,7 +39,7 @@ int main()
 	setlocale(LC_ALL, "");
 	init_color();
 
-	const char* file_name = "tests/ebnf_test.lang";
+	const char* file_name = "tests/ebnf_target.lang";
 	char* file = init_file(file_name);
 	if(file == NULL) {
 		printf("	at init_file\n");
@@ -78,10 +78,12 @@ int main()
 	table = init_table();
 
 	printf("\n### LOAD EBNF ###\n");
-	rule_c* rules = example_ebnf();
+	/* rule_c* rules = example_ebnf(); */
+	rule_c* rules = parse_ebnf_file(lexer, table);
+	printf("parsed ebnf file\n");
 
 	printf("\n### CHECK SYNTAX ###\n");
-        if (check_syntax_tree(lexer, rules)) {
+        if (check_syntax(lexer, rules)) {
 		printf("syntax is correct!!!\n");
 	}
 	/* printf("\n### SYNTAX TREE ###\n"); */

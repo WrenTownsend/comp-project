@@ -163,3 +163,36 @@ meta_rule = "(", rule, "EOF" | ")", "EOF"
   - option
     - element
     - element
+
+* parse_ebnf_file sudo code
+//pass what its tagged to
+new_rule // eats id
+new_option
+new_element // eats id and return what type
+
+root_rule
+
+current_rule
+current_option
+current_element
+
+current_rule = new_rule(root_rule)
+find rules {
+        eat "="
+        current_option = new_option(current_rule)
+        find options {
+                current_element = new_element(current_option)
+                finds element {
+                        return if "|" or ";"
+                        eat ","
+                        current_element = new_element(current_element)
+                }
+                return if ";"
+                eat "|"
+                current_option = new_option(current_option)
+        }
+        return if "EOF"
+        eat ";"
+        current_rule = new_rule(current_rule)
+}
+                        

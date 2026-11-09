@@ -3,6 +3,8 @@
 #include "config.h"
 #include "lexer.h"
 
+int check_element(lexer_t *l, element_c *element);
+int check_option(lexer_t *l, option_c *option);
 int check_rule(lexer_t *l, rule_c* rule);
 
 int check_element(lexer_t *l, element_c *element)
@@ -15,7 +17,7 @@ int check_element(lexer_t *l, element_c *element)
 		return 1;
 	}
         if (element->type == NOTHING) {
-		return 0;
+		return 1;
 	}
 	return 0;
 }
@@ -25,10 +27,7 @@ int check_option(lexer_t *l, option_c *option)
 	if (!check_element(l, option->element_list)) {
 		return 0;
 	}
-	for (element_c *current_element = option->element_list->next;
-	current_element;
-	current_element = current_element->next) {
-	 
+	for (element_c *current_element = option->element_list->next; current_element; current_element = current_element->next) {
 		if (!check_element(l, current_element)) {
 			printf("error: expected something after something\n");
 			exit(1);
@@ -47,13 +46,12 @@ int check_rule(lexer_t *l, rule_c* rule)
 	return 0;
 }
 
-int check_syntax_tree(lexer_t* lexer, rule_c* rule) // TODO: remove table its just there for compatibility
+int check_syntax(lexer_t* lexer, rule_c* rule)
 {
 	get_token(lexer);
 
         if (check_rule(lexer, rule)) {
-		printf("yippeee the rule is correct\n");
 		return 1;
 	}
-	return 0; // should be imposible to reach
+	return 0;
 };

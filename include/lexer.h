@@ -22,6 +22,7 @@ typedef enum {
 	TK_CLOSE_BRACE,
 	TK_OPEN_BRACKET,
 	TK_CLOSE_BRACKET,
+	TK_QUOTE, // TODO: new
 	//operator
 	TK_PLUS,
 	TK_MINUS,
@@ -31,6 +32,8 @@ typedef enum {
 	TK_EQ,
 	TK_GT,
 	TK_LT,
+
+	TK_OR, // TODO: just added probobly need to add print stuff and detection
 
 	TK_ASSIGN,
 	//literal

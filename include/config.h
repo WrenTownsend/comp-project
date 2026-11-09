@@ -37,3 +37,4 @@ struct rule_c {
 
 // functions
 rule_c* example_ebnf();
+rule_c* parse_ebnf_file(lexer_t*, table_t*);

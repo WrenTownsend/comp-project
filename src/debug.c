@@ -47,13 +47,19 @@ int print_token(const token_t* token)
 		case TK_CLOSE_BRACE: printf("CLOSE_BRACE\n"); return 0;
 		case TK_OPEN_BRACKET: printf("OPEN_BRACKET\n"); return 0;
 		case TK_CLOSE_BRACKET: printf("CLOSE_BRACKET\n"); return 0;
+		case TK_QUOTE: printf("QUOTE\n"); return 0;
 		//operator
 		case TK_PLUS: printf("PLUS\n"); return 0;
-		case TK_EQ: printf("EQ\n"); return 0;
+		case TK_MINUS: printf("MINUS\n"); return 0;
 		case TK_MULT: printf("MULT\n"); return 0;
 		case TK_DIV: printf("DIV\n"); return 0;
 
+		case TK_EQ: printf("EQ\n"); return 0;
 		case TK_LT: printf("LT\n"); return 0;
+		case TK_GT: printf("GT\n"); return 0;
+
+		case TK_OR: printf("OR\n"); return 0;
+
 		case TK_ASSIGN: printf("ASSIGN\n"); return 0;
 		//literals
 		case TK_INT_LIT: printf("INT_LIT: %s\n", token->content); return 0;

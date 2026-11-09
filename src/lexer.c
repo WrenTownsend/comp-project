@@ -105,6 +105,9 @@ int get_token(lexer_t* lexer)
 		case ']':
 			set_token(lexer, TK_CLOSE_BRACKET, p, p+1);
 			break;
+		case '"':
+			set_token(lexer, TK_QUOTE, p, p+1);
+			break;
 		case '+':
 			set_token(lexer, TK_PLUS, p, p+1);
 			break;
@@ -125,6 +128,8 @@ int get_token(lexer_t* lexer)
 			set_token(lexer, TK_GT, p, p+1); break;
 		case '<':
 			set_token(lexer, TK_LT, p, p+1); break;
+		case '|':
+			set_token(lexer, TK_OR, p, p+1); break;
 		case '0': case '1': case '2': case '3': case '4':
 		case '5': case '6': case '7': case '8': case '9':
 			{

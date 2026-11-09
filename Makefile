@@ -4,11 +4,11 @@ main: src
 run: main
 	./main
 
-config_test: tests
+config_test: src include tests
 	gcc -ggdb -Iinclude -o config tests/config_test.c src/config.c src/debug.c src/lexer.c src/ebnf_parser.c src/symbol_table.c
 
-config_run: config_test
+run_config: config_test
 	./config
 
 clean:
-	rm -f main
+	rm -f main config
