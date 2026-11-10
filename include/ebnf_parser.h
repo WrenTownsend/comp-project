@@ -21,7 +21,7 @@ struct element_c {
 	tag_c type;
 	union {
 		token_type terminal;
-		rule_c** rule; //points to the entry in the config table
+		rule_c** rule; //points to the entry in the rule table
 	} data;
 	element_c* next;
 };
@@ -33,8 +33,7 @@ struct option_c {
 
 struct rule_c {
 	option_c* option_list;
-	rule_c* next;
 };
 
 // functions
-rule_c* parse_ebnf_file(lexer_t*, table_t*);
+int parse_ebnf(lexer_t*, table_t*);

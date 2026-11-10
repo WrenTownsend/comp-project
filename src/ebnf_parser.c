@@ -4,7 +4,7 @@
 #include "ebnf_parser.h"
 #include "lexer.h"
 
-rule_c* new_rule(table_t* t, lexer_t* l)
+rule_c* new_rule(lexer_t* l, table_t* t)
 {
 	rule_c* new_rule = calloc(1, sizeof(rule_c));
 	if(l->token.type != TK_ID) {
@@ -54,19 +54,17 @@ element_c* new_element(lexer_t* l, table_t* t)
 	exit(1);
 }
 
-rule_c* parse_ebnf_file(lexer_t* l, table_t* table) // table is to keep track of variable names
+int parse_ebnf(lexer_t* l, table_t* t) // t is to keep track of variable names
 {
 	next_token(l);
 
-	rule_c* root_rule;
-
-	rule_c* current_rule; //eat id and put it on table
+	rule_c* current_rule; //eat id and put it on t
 	option_c* current_option;
 	element_c* current_element; //eat id and return element of correct type
 
-	// have table with rule names and a pointer to pass to add_element
+	// have t with rule names and a pointer to pass to add_element
 	
-	current_rule = root_rule = new_rule(table, l);
+	current_rule = new_rule(l, t);
 	for(;;) { // rules loop
 		if(l->token.type != TK_ASSIGN) {
 			printf("error: expected \"=\" after rule id\n");
@@ -77,7 +75,7 @@ rule_c* parse_ebnf_file(lexer_t* l, table_t* table) // table is to keep track of
 		current_option = current_rule->option_list = new_option(l);
 		for(;;) { // options loop
 
-			current_element = current_option->element_list = new_element(l,table);
+			current_element = current_option->element_list = new_element(l,t);
 			for(;;) { // elements loop
 				if(l->token.type == TK_OR || l->token.type == TK_SEMICOLON) {
 					break;
@@ -88,7 +86,7 @@ rule_c* parse_ebnf_file(lexer_t* l, table_t* table) // table is to keep track of
 				}
 				next_token(l);
 				
-				current_element = current_element->next = new_element(l, table);
+				current_element = current_element->next = new_element(l, t);
 			}
 			if(l->token.type == TK_SEMICOLON) {
 				break;
@@ -99,7 +97,7 @@ rule_c* parse_ebnf_file(lexer_t* l, table_t* table) // table is to keep track of
 			}
 			next_token(l);
 
-			 current_option = current_option->next = new_option(l);
+			current_option = current_option->next = new_option(l);
 		}
 		if(l->token.type != TK_SEMICOLON) {
 			printf("error: expected \";\" after rule\n");
@@ -111,9 +109,9 @@ rule_c* parse_ebnf_file(lexer_t* l, table_t* table) // table is to keep track of
 			break;
 		}
 
-		current_rule = current_rule->next = new_rule(table, l);
+		current_rule = new_rule(l, t);
 	}
 
-	test_all_defined(table);
-	return root_rule;
+	test_all_defined(t);
+	return 0;
 }

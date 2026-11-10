@@ -16,7 +16,7 @@ typedef struct {
 }table_t;
 
 table_t* init_table();
-int free_table(table_t*);
+int free_table(table_t*); // TODO: implement free_tree
 int create_entry(table_t*, char*); //returns id or returns -1 on error
 entry_t* get_entry(table_t*, char*);
 int test_all_defined(table_t*);

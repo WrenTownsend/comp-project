@@ -56,7 +56,7 @@ entry_t* get_entry(table_t* table, char* name)
 			return &table->arr[i];
 		}
 	}
-	printf("error: couldn't find entry in table\n");
+	printf("error: couldn't find \"%s\" in table\n", name);
 	exit(1);
 }
 

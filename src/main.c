@@ -34,13 +34,28 @@ char* init_file(const char* file_name)
 	return buffer;
 }
 
-int main()
+int main(int argc, char* argv[])
 {
 	setlocale(LC_ALL, "");
 	init_color();
 
-	const char* ebnf_file_name = "tests/ebnf_simple.lang";
+	if(argc < 3) {
+		printf("all files not given\n");
+		exit(1);
+	} else if(argc > 3) {
+		printf("too many files given\n");
+		exit(1);
+	}
+
+	const char* ebnf_file_name = argv[1];
+	const char* lang_file_name = argv[2];
+	
 	char* file = init_file(ebnf_file_name);
+	if(file == NULL) {
+		printf("	at init_file\n");
+		return 1;
+	}
+	char* lang_file = init_file(lang_file_name);
 	if(file == NULL) {
 		printf("	at init_file\n");
 		return 1;
@@ -79,17 +94,14 @@ int main()
 	free(table);
 	table = init_table();
 
-	printf("\n### LOAD EBNF ###\n");
-	rule_c* rules = parse_ebnf_file(lexer, table);
+	printf("\n### PARSE EBNF ###\n");
+	parse_ebnf(lexer, table);
 	printf("parsed ebnf file\n");
 
+	//set entry point
+	rule_c* entry_rule = get_entry(table, "main")->content;
+
 	printf("\n### LANGUAGE FILE ###\n");
-	const char* lang_file_name = "tests/ebnf_test.lang";
-	char* lang_file = init_file(lang_file_name);
-	if(file == NULL) {
-		printf("	at init_file\n");
-		return 1;
-	}
 
 	{
 		char current_char = 1;
@@ -101,14 +113,9 @@ int main()
 		}
 	}
 
-	// cleanup
-	free(table->arr);
-	free(table);
-	table = init_table();
-	lexer = lexer_init(lang_file, table);
 
 	printf("\n### CHECK SYNTAX ###\n");
-        if (check_syntax(lexer, rules)) {
+        if (check_syntax(lexer, entry_rule)) {
 		printf("syntax is correct!!!\n");
 	}
 
@@ -117,6 +124,9 @@ int main()
 
 	printf("\n### TABLE TEST ###\n");
 	print_table(table);
+	// cleanup
+	free(table->arr);
+	free(table);
 
 	// TODO: also free the tree and table
 	free(lexer);

@@ -48,4 +48,5 @@ typedef struct node {
 } node_t;
 
 node_t* get_syntax_tree(lexer_t*, table_t*);
+// TODO: add free_tree function
 int print_tree(node_t*);
