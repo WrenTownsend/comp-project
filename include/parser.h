@@ -1,7 +1,7 @@
 #pragma once
 
 #include "lexer.h"
-#include "symbol_table.h"
+#include "rule_table.h"
 
 typedef enum {
 	N_PROGRAM,

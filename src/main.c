@@ -2,9 +2,9 @@
 #include <stdlib.h>
 #include <locale.h>
 #include "lexer.h"
-#include "parser.h"
-#include "symbol_table.h"
 #include "debug.h"
+#include "lang_parser.h"
+#include "ebnf_parser.h"
 
 char* init_file(const char* file_name)
 {
@@ -33,25 +33,28 @@ char* init_file(const char* file_name)
 
 	return buffer;
 }
+
 int main()
 {
 	setlocale(LC_ALL, "");
 	init_color();
 
-	const char* file_name = "tests/test.lang";
-	char* file = init_file(file_name);
+	const char* ebnf_file_name = "tests/ebnf_simple.lang";
+	char* file = init_file(ebnf_file_name);
 	if(file == NULL) {
 		printf("	at init_file\n");
 		return 1;
 	}
 
-	printf("### FILE ###\n");
-	char current_char = 1;
-	char* read = file;
-	while(current_char != '\0') {
-		printf("%c", *read);
-		read++;
-		current_char = *read;
+	printf("### EBNF FILE ###\n");
+	{
+		char current_char = 1;
+		char* read = file;
+		while(current_char != '\0') {
+			printf("%c", *read);
+			read++;
+			current_char = *read;
+		}
 	}
 
 	//init table
@@ -60,8 +63,8 @@ int main()
 	printf("\n### TOKENS ###\n");
 	lexer_t* lexer = lexer_init(file, table);
 	while(lexer->token.type != TK_EOF) {
-		if(get_token(lexer)) {
-			printf("	at get_token\n");
+		if(next_token(lexer)) {
+			printf("	at next_token\n");
 			return 1;
 		}
 		if(print_token(&lexer->token)) {
@@ -76,11 +79,41 @@ int main()
 	free(table);
 	table = init_table();
 
-	printf("\n### SYNTAX DEBUG ###\n");
-	node_t* tree = get_syntax_tree(lexer, table);
+	printf("\n### LOAD EBNF ###\n");
+	rule_c* rules = parse_ebnf_file(lexer, table);
+	printf("parsed ebnf file\n");
 
-	printf("\n### SYNTAX TREE ###\n");
-	print_tree(tree);
+	printf("\n### LANGUAGE FILE ###\n");
+	const char* lang_file_name = "tests/ebnf_test.lang";
+	char* lang_file = init_file(lang_file_name);
+	if(file == NULL) {
+		printf("	at init_file\n");
+		return 1;
+	}
+
+	{
+		char current_char = 1;
+		char* read = lang_file;
+		while(current_char != '\0') {
+			printf("%c", *read);
+			read++;
+			current_char = *read;
+		}
+	}
+
+	// cleanup
+	free(table->arr);
+	free(table);
+	table = init_table();
+	lexer = lexer_init(lang_file, table);
+
+	printf("\n### CHECK SYNTAX ###\n");
+        if (check_syntax(lexer, rules)) {
+		printf("syntax is correct!!!\n");
+	}
+
+	/* printf("\n### SYNTAX TREE ###\n"); */
+	/* print_tree(tree); */
 
 	printf("\n### TABLE TEST ###\n");
 	print_table(table);

@@ -3,7 +3,7 @@
 #include "debug.h"
 #include "lexer.h"
 #include "parser.h"
-#include "symbol_table.h"
+#include "rule_table.h"
 
 // color!!
 static _Bool color_enabled;

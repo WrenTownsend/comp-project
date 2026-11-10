@@ -58,7 +58,7 @@ node_t* program(lexer_t* l)
 		printf("error: expected EOF after <top_emels> in <program>");
 		exit(1);
 	}
-	get_token(l);
+	next_token(l);
 
 	return new_node(N_PROGRAM, left, NULL);
 }
@@ -116,7 +116,7 @@ node_t* func_sig(lexer_t* l)
 	if(l->token.type != TK_FN) {
 		return NULL;
 	}
-	get_token(l);
+	next_token(l);
 
 	node_t* left = id(l);
 	if(!left) {
@@ -135,7 +135,7 @@ node_t* comp_stmt(lexer_t* l) {
 	if(l->token.type != TK_OPEN_BRACE) {
 		return NULL;
 	}
-	get_token(l);
+	next_token(l);
 
 	node_t* left = stmts(l);
 	if(!left) {
@@ -147,7 +147,7 @@ node_t* comp_stmt(lexer_t* l) {
 		printf("error: expected \"}\" at end of <comp_stmt>\n");
 		exit(1);
 	}
-	get_token(l);
+	next_token(l);
 
 	return new_node(N_COMP_STMT, left, NULL);
 }
@@ -205,13 +205,13 @@ node_t* return_stmt(lexer_t* l) {
 	if(l->token.type != TK_RETURN) {
 		return NULL;
 	}
-	get_token(l);
+	next_token(l);
 
 	if(l->token.type != TK_SEMICOLON) {
 		printf("error: expected \";\" after \"return\" in <return_stmt>\n");
 		exit(1);
 	}
-	get_token(l);
+	next_token(l);
 
 	return new_terminal(N_RETURN_STMT);
 }
@@ -221,7 +221,7 @@ node_t* decl_stmt(lexer_t* l) {
 	if(l->token.type != TK_VAR) {
 		return NULL;
 	}
-	get_token(l);
+	next_token(l);
 
 	node_t* left = id(l);
 	if(!left) {
@@ -234,7 +234,7 @@ node_t* decl_stmt(lexer_t* l) {
 		printf("error: expected SEMICOLON after <decl_stmt>");
 		exit(1);
 	}
-	get_token(l);
+	next_token(l);
 
 	return new_node(N_DECL_STMT, left, NULL);
 }
@@ -249,7 +249,7 @@ node_t* assign_stmt(lexer_t* l) {
 		printf("error: expected \"=\" after ID in <assign_stmt>\n");
 		exit(1);
 	}
-	get_token(l);
+	next_token(l);
 
 	node_t* right = expr(l);
 	if(!right) {
@@ -261,7 +261,7 @@ node_t* assign_stmt(lexer_t* l) {
 		printf("error: expected \";\" after <expr> in <assign_stmt>\n");
 		exit(1);
 	}
-	get_token(l);
+	next_token(l);
 
 	return new_node(N_ASSIGN_STMT, left, right);
 }
@@ -270,13 +270,13 @@ node_t* if_stmt(lexer_t* l) {
 	if(l->token.type != TK_IF) {
 		return NULL;
 	}
-	get_token(l);
+	next_token(l);
 
 	if(l->token.type != TK_OPEN_PARAN) {
 		printf("error: expected \"(\" after \"if\" in <if_stmt>\n");
 		exit(1);
 	}
-	get_token(l);
+	next_token(l);
 
 	node_t* left = expr(l);
 	if(!left) {
@@ -288,7 +288,7 @@ node_t* if_stmt(lexer_t* l) {
 		printf("error: expected \")\" after <expr> in <if_stmt>\n");
 		exit(1);
 	}
-	get_token(l);
+	next_token(l);
 
 	node_t* right = comp_stmt(l);
 	if(!left) {
@@ -303,13 +303,13 @@ node_t* while_stmt(lexer_t* l) {
 	if(l->token.type != TK_WHILE) {
 		return NULL;
 	}
-	get_token(l);
+	next_token(l);
 
 	if(l->token.type != TK_OPEN_PARAN) {
 		printf("error: expected \"(\" after \"while\" in <while_stmt>\n");
 		exit(1);
 	}
-	get_token(l);
+	next_token(l);
 
 	node_t* left = expr(l);
 	if(!left) {
@@ -321,7 +321,7 @@ node_t* while_stmt(lexer_t* l) {
 		printf("error: expected \")\" after <expr> in <while_stmt>\n");
 		exit(1);
 	}
-	get_token(l);
+	next_token(l);
 
 	node_t* right = comp_stmt(l);
 	if(!left) {
@@ -344,7 +344,7 @@ node_t* expr(lexer_t* l) {
 	}
 	for(;;) {
 		if (l->token.type == TK_PLUS) {
-			get_token(l);
+			next_token(l);
 			node_t* right = term(l);
 			if(!right) {
 				printf("error: expected TERM after \"+\"\n");
@@ -352,7 +352,7 @@ node_t* expr(lexer_t* l) {
 			};
 			left = new_node(N_PLUS, left, right);
 		} else if (l->token.type == TK_MINUS) {
-			get_token(l);
+			next_token(l);
 			node_t* right = term(l);
 			if(!right) {
 				printf("error: expected TERM after \"-\"\n");
@@ -373,7 +373,7 @@ node_t* term(lexer_t* l) {
 	};
 	for(;;) {
 		if (l->token.type == TK_MULT) {
-			get_token(l);
+			next_token(l);
 			node_t* right = factor(l);
 			if(!right) {
 				printf("error: expected <factor> after \"*\"\n");
@@ -381,7 +381,7 @@ node_t* term(lexer_t* l) {
 			}
 			left = new_node(N_MULT, left, right);
 		} else if (l->token.type == TK_DIV) {
-			get_token(l);
+			next_token(l);
 			node_t* right = factor(l);
 			if(!right) {
 				printf("error: expected <factor> after \"*\"\n");
@@ -409,7 +409,7 @@ node_t* factor(lexer_t* l) {
 	}
 
 	if (l->token.type == TK_OPEN_PARAN) {
-		get_token(l);
+		next_token(l);
 		node_t* left = expr(l);
 		if(!left) {
 			printf("error: expected <expr> after \"(\"\n");
@@ -419,7 +419,7 @@ node_t* factor(lexer_t* l) {
 			printf("error: expected \")\" after <expr>\n");
 			exit(1);
 		}
-		get_token(l);
+		next_token(l);
 		return new_node(N_FACTOR, left, NULL);
 	}
 	return NULL;
@@ -429,14 +429,14 @@ node_t* factor(lexer_t* l) {
 
 node_t* id(lexer_t* l) {
 	if(l->token.type == TK_ID) {
-		get_token(l);
+		next_token(l);
 		return new_terminal(N_ID);
 	}
 	return NULL;
 }
 node_t* int_lit(lexer_t* l) {
 	if(l->token.type == TK_INT_LIT) {
-		get_token(l);
+		next_token(l);
 		return new_terminal(N_INT_LIT);
 	}
 	return NULL;
@@ -446,7 +446,7 @@ node_t* int_lit(lexer_t* l) {
 
 node_t* get_syntax_tree(lexer_t* lexer, table_t* table)
 {
-	get_token(lexer);
+	next_token(lexer);
 	node_t* root = program(lexer);
 	if(!root) {
 		printf("error: expected top_elems in program\n");

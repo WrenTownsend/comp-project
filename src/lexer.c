@@ -3,7 +3,7 @@
 #include <ctype.h>
 #include <string.h>
 #include "lexer.h"
-#include "symbol_table.h"
+#include "rule_table.h"
 
 lexer_t* lexer_init(char* file, table_t* table)
 {
@@ -50,7 +50,7 @@ static token_type lookup_keyword(char* str)
 	return TK_ID;
 }
 
-int get_token(lexer_t* lexer)
+int next_token(lexer_t* lexer)
 {
 	// clear content
 	lexer->token.content[0] = '\0';
@@ -62,6 +62,7 @@ int get_token(lexer_t* lexer)
 		p++;
 	}
 
+	// 
 	// skip comments
 	if(p[0] == '/' && p[1] == '/') {
 		p += 2;

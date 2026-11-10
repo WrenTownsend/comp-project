@@ -1,57 +1,119 @@
-#include <stdio.h>
 #include <stdlib.h>
-#include "config.h"
+#include <stdarg.h>
+#include <stdio.h>
+#include "ebnf_parser.h"
 #include "lexer.h"
 
-int check_element(lexer_t *l, element_c *element);
-int check_option(lexer_t *l, option_c *option);
-int check_rule(lexer_t *l, rule_c* rule);
-
-int check_element(lexer_t *l, element_c *element)
+rule_c* new_rule(table_t* t, lexer_t* l)
 {
-	if (element->type == TERMINAL && element->data.terminal == l->token.type) {
-		get_token(l);
-		return 1;
+	rule_c* new_rule = calloc(1, sizeof(rule_c));
+	if(l->token.type != TK_ID) {
+		printf("error: expected ID for rule\n");
+		exit(1);
 	}
-        if (element->type == RULE && check_rule(l, *element->data.rule)) {
-		return 1;
-	}
-        if (element->type == NOTHING) {
-		return 1;
-	}
-	return 0;
+	get_entry(t, l->token.content)->content = new_rule; //set table entry pointer
+	next_token(l);
+	return new_rule;
 }
-
-int check_option(lexer_t *l, option_c *option)
+option_c* new_option(lexer_t* l)
 {
-	if (!check_element(l, option->element_list)) {
-		return 0;
+	option_c* new_option = calloc(1, sizeof(option_c));
+	return new_option;
+}
+element_c* new_element(lexer_t* l, table_t* t)
+{
+	element_c* new_element = calloc(1, sizeof(element_c));
+
+	if(l->token.type == TK_ID) {
+		new_element->type = RULE;
+		new_element->data.rule = (rule_c**)&get_entry(t, l->token.content)->content;
+		next_token(l);
+		return new_element;
 	}
-	for (element_c *current_element = option->element_list->next; current_element; current_element = current_element->next) {
-		if (!check_element(l, current_element)) {
-			printf("error: expected something after something\n");
+	if(l->token.type == TK_QUOTE) {
+		next_token(l);
+		if(l->token.type == TK_QUOTE) { //empty string
+			next_token(l);
+			new_element->type = NOTHING;
+			return new_element;
+		}
+		//terminal
+		new_element->type = TERMINAL;
+		new_element->data.terminal = l->token.type;
+		next_token(l);
+		if(l->token.type != TK_QUOTE) {
+			printf("error: expecter \" after element"); // TODO: make this more spacific
 			exit(1);
 		}
+		next_token(l);
+		return new_element;
+
 	}
-	return 1;
+	
+	printf("error: expected rule or teminal for element\n");
+	exit(1);
 }
 
-int check_rule(lexer_t *l, rule_c* rule)
+rule_c* parse_ebnf_file(lexer_t* l, table_t* table) // table is to keep track of variable names
 {
-	for (option_c* current_option = rule->option_list; current_option; current_option = current_option->next){ // for every option
-                if(check_option(l, current_option)) {
-			return 1;	
+	next_token(l);
+
+	rule_c* root_rule;
+
+	rule_c* current_rule; //eat id and put it on table
+	option_c* current_option;
+	element_c* current_element; //eat id and return element of correct type
+
+	// have table with rule names and a pointer to pass to add_element
+	
+	current_rule = root_rule = new_rule(table, l);
+	for(;;) { // rules loop
+		if(l->token.type != TK_ASSIGN) {
+			printf("error: expected \"=\" after rule id\n");
+			exit(1);
 		}
+		next_token(l);
+
+		current_option = current_rule->option_list = new_option(l);
+		for(;;) { // options loop
+
+			current_element = current_option->element_list = new_element(l,table);
+			for(;;) { // elements loop
+				if(l->token.type == TK_OR || l->token.type == TK_SEMICOLON) {
+					break;
+				}
+				if(l->token.type != TK_COMMA) {
+					printf("error: expected \",\" after element\n");
+					exit(1);
+				}
+				next_token(l);
+				
+				current_element = current_element->next = new_element(l, table);
+			}
+			if(l->token.type == TK_SEMICOLON) {
+				break;
+			}
+			if(l->token.type != TK_OR) {
+				printf("error: expected \"|\" or \";\" after option\n");
+				exit(1);
+			}
+			next_token(l);
+
+			 current_option = current_option->next = new_option(l);
+		}
+		if(l->token.type != TK_SEMICOLON) {
+			printf("error: expected \";\" after rule\n");
+			exit(1);
+		}
+		next_token(l);
+
+		if(l->token.type == TK_EOF) {
+			break;
+		}
+
+		current_rule = current_rule->next = new_rule(table, l);
 	}
-	return 0;
+
+	test_all_defined(table);
+	return root_rule;
 }
-
-int check_syntax(lexer_t* lexer, rule_c* rule)
-{
-	get_token(lexer);
-
-        if (check_rule(lexer, rule)) {
-		return 1;
-	}
-	return 0;
-};

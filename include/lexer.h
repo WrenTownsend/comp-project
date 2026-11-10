@@ -1,6 +1,6 @@
 #pragma once
 
-#include "symbol_table.h"
+#include "rule_table.h"
 
 typedef enum {
 	//identifiers
@@ -60,5 +60,5 @@ typedef struct {
 
 lexer_t* lexer_init(char*, table_t*);
 void lexer_reset(lexer_t*);
-int get_token(lexer_t*);
+int next_token(lexer_t*);
 int print_token(const token_t*);

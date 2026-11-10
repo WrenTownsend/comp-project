@@ -2,7 +2,7 @@
 
 #include "lexer.h"
 #include "parser.h"
-#include "symbol_table.h"
+#include "rule_table.h"
 
 void init_color();
 int print_token(const token_t*);
