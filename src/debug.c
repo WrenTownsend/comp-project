@@ -4,6 +4,7 @@
 #include "lexer.h"
 #include "parser.h"
 #include "rule_table.h"
+#include "lang_parser.h"
 
 // color!!
 static _Bool color_enabled;
@@ -67,6 +68,52 @@ int print_token(const token_t* token)
 		case TK_EOF: printf("EOF\n"); return 0;
 		case TK_NULL: printf("NULL\n"); return 0;
 		default: printf("error: failed to print %d\n", token->type); return 1;
+	}
+}
+
+// TODO: this is termorary and stupid
+int print_token_type(token_type type) 
+{
+	switch(type) {
+		//identifiers
+		case TK_ID: printf("ID\n"); return 0;
+		//keywords
+		case TK_FN: printf("FN\n"); return 0;
+		case TK_VAR: printf("VAR\n"); return 0;
+		case TK_IF: printf("IF\n"); return 0;
+		case TK_WHILE: printf("WHILE\n"); return 0;
+		case TK_RETURN: printf("RETURN\n"); return 0;
+		//delimiters
+		case TK_SEMICOLON: printf("SEMICOLON\n"); return 0;
+		case TK_COMMA: printf("COMMA\n"); return 0;
+		case TK_COLON: printf("COLON\n"); return 0;
+		case TK_DOT: printf("DOT\n"); return 0;
+		case TK_OPEN_PARAN: printf("OPEN_PARAN\n"); return 0;
+		case TK_CLOSE_PARAN: printf("CLOSE_PARAN\n"); return 0;
+		case TK_OPEN_BRACE: printf("OPEN_BRACE\n"); return 0;
+		case TK_CLOSE_BRACE: printf("CLOSE_BRACE\n"); return 0;
+		case TK_OPEN_BRACKET: printf("OPEN_BRACKET\n"); return 0;
+		case TK_CLOSE_BRACKET: printf("CLOSE_BRACKET\n"); return 0;
+		case TK_QUOTE: printf("QUOTE\n"); return 0;
+		//operator
+		case TK_PLUS: printf("PLUS\n"); return 0;
+		case TK_MINUS: printf("MINUS\n"); return 0;
+		case TK_MULT: printf("MULT\n"); return 0;
+		case TK_DIV: printf("DIV\n"); return 0;
+
+		case TK_EQ: printf("EQ\n"); return 0;
+		case TK_LT: printf("LT\n"); return 0;
+		case TK_GT: printf("GT\n"); return 0;
+
+		case TK_OR: printf("OR\n"); return 0;
+
+		case TK_ASSIGN: printf("ASSIGN\n"); return 0;
+		//literals
+		case TK_INT_LIT: printf("INT_LIT\n"); return 0;
+		//other
+		case TK_EOF: printf("EOF\n"); return 0;
+		case TK_NULL: printf("NULL\n"); return 0;
+		default: printf("error: failed to print %d\n", type); return 1;
 	}
 }
 
@@ -143,6 +190,40 @@ int print_table(table_t* table)
 	printf("size: %d, capacity: %d\n", table->size, table->capacity);
 	for(int i = 0; i < table->size; i++) {
 		printf("id: %d, name: %s, content: %d\n", i, table->arr[i].name, table->arr[i].content);
+	}
+	return 0;
+}
+
+int print_rule(rule_c* rule)
+{
+	for(option_c* c_opt = rule->option_list; c_opt; c_opt = c_opt->next) {
+		printf("options:\n");
+		for(element_c* c_elem = c_opt->element_list; c_elem; c_elem = c_elem->next) {
+			printf("\telements:\n");
+			switch(c_elem->type) {
+			case RULE:	
+				printf("\t\trule: %d\n", c_elem->data.rule);
+				break;
+			case TERMINAL:
+				printf("\t\tterminal: ");
+				print_token_type(c_elem->data.terminal);
+				break;
+			case NOTHING:
+				printf("\t\telement: nothing\n");
+				break;
+			}
+		}
+	}
+}
+int print_rules(table_t* table)
+{
+	printf("size: %d, capacity: %d\n", table->size, table->capacity);
+	for(int i = 0; i < table->size; i++) {
+		printf("id: %d, name: %s, content: %d\n", i, table->arr[i].name, table->arr[i].content);
+		if(table->arr[i].content) {
+			print_rule(table->arr[i].content);
+		}
+		printf("\n");
 	}
 	return 0;
 }

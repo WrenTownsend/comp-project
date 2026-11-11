@@ -21,7 +21,7 @@ struct element_c {
 	tag_c type;
 	union {
 		token_type terminal;
-		rule_c** rule; //points to the entry in the rule table
+		int rule; //id for the rule in the rule table
 	} data;
 	element_c* next;
 };

@@ -50,13 +50,11 @@ int main(int argc, char* argv[])
 	const char* ebnf_file_name = argv[1];
 	const char* lang_file_name = argv[2];
 	
-	char* file = init_file(ebnf_file_name);
-	if(file == NULL) {
-		printf("	at init_file\n");
-		return 1;
-	}
-	char* lang_file = init_file(lang_file_name);
-	if(file == NULL) {
+	// ##################
+	// ### EBNF STUFF ###
+	// ##################
+	char* ebnf_file = init_file(ebnf_file_name);
+	if(ebnf_file == NULL) {
 		printf("	at init_file\n");
 		return 1;
 	}
@@ -64,7 +62,7 @@ int main(int argc, char* argv[])
 	printf("### EBNF FILE ###\n");
 	{
 		char current_char = 1;
-		char* read = file;
+		char* read = ebnf_file;
 		while(current_char != '\0') {
 			printf("%c", *read);
 			read++;
@@ -74,35 +72,35 @@ int main(int argc, char* argv[])
 
 	//init table
 	table_t* table = init_table();
-
-	printf("\n### TOKENS ###\n");
-	lexer_t* lexer = lexer_init(file, table);
-	while(lexer->token.type != TK_EOF) {
-		if(next_token(lexer)) {
-			printf("	at next_token\n");
-			return 1;
-		}
-		if(print_token(&lexer->token)) {
-			printf("	at print_token\n");
-			return 1;
-		}
-	}
-
-	// cleanup
-	lexer_reset(lexer);
-	free(table->arr);
-	free(table);
-	table = init_table();
+	lexer_t* lexer = init_lexer(ebnf_file, table);
 
 	printf("\n### PARSE EBNF ###\n");
 	parse_ebnf(lexer, table);
 	printf("parsed ebnf file\n");
 
+	printf("\n### TABLE TEST ###\n");
+	print_table(table);
+
+	printf("\n### RULES ###\n");
+	print_rules(table);
+
 	//set entry point
-	rule_c* entry_rule = get_entry(table, "main")->content;
+	rule_c* entry_rule = (rule_c*)table->arr[get_entry(table, "main")].content;
+
+	//cleanup
+	free(ebnf_file);
+	free(lexer);
+
+	// ##################
+	// ### LANG STUFF ###
+	// ##################
+	char* lang_file = init_file(lang_file_name);
+	if(lang_file == NULL) {
+		printf("	at init_file\n");
+		return 1;
+	}
 
 	printf("\n### LANGUAGE FILE ###\n");
-
 	{
 		char current_char = 1;
 		char* read = lang_file;
@@ -113,23 +111,20 @@ int main(int argc, char* argv[])
 		}
 	}
 
+	table_t* other_table = init_table();
+	lexer = init_lexer(lang_file, other_table);
 
 	printf("\n### CHECK SYNTAX ###\n");
-        if (check_syntax(lexer, entry_rule)) {
+        if (check_syntax(lexer, table, entry_rule)) {
 		printf("syntax is correct!!!\n");
+	} else {
+		printf("syntax is incorrect:(\n");
 	}
 
-	/* printf("\n### SYNTAX TREE ###\n"); */
-	/* print_tree(tree); */
-
-	printf("\n### TABLE TEST ###\n");
-	print_table(table);
 	// cleanup
+	free(lexer);
 	free(table->arr);
 	free(table);
 
-	// TODO: also free the tree and table
-	free(lexer);
-	lexer = NULL;
 	return 0;
 }

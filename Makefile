@@ -1,4 +1,4 @@
-main: src
+main: src/* include/*
 	gcc -ggdb -Iinclude -o main src/*.c
 
 run: main

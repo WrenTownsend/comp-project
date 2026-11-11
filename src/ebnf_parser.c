@@ -11,7 +11,7 @@ rule_c* new_rule(lexer_t* l, table_t* t)
 		printf("error: expected ID for rule\n");
 		exit(1);
 	}
-	get_entry(t, l->token.content)->content = new_rule; //set table entry pointer
+	t->arr[get_entry(t, l->token.content)].content = new_rule; //set table entry pointer
 	next_token(l);
 	return new_rule;
 }
@@ -26,7 +26,7 @@ element_c* new_element(lexer_t* l, table_t* t)
 
 	if(l->token.type == TK_ID) {
 		new_element->type = RULE;
-		new_element->data.rule = (rule_c**)&get_entry(t, l->token.content)->content;
+		new_element->data.rule = get_entry(t, l->token.content);
 		next_token(l);
 		return new_element;
 	}

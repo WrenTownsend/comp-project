@@ -5,7 +5,7 @@
 #include "lexer.h"
 #include "rule_table.h"
 
-lexer_t* lexer_init(char* file, table_t* table)
+lexer_t* init_lexer(char* file, table_t* table)
 {
 	lexer_t* lexer = malloc(sizeof(lexer_t));
 	lexer->file = file;

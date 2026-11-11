@@ -1,2 +1,3 @@
-main = "fn", "fn", main | other ;
-other = ";", ";" ;
+main = expr ;
+
+expr = "fn" ;

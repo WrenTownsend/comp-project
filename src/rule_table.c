@@ -49,11 +49,11 @@ int create_entry(table_t* table, char* name)
 	return table->size - 1;
 }
 
-entry_t* get_entry(table_t* table, char* name)
+int get_entry(table_t* table, char* name)
 {
 	for(int i = 0; i < table->size; i++){
 		if(strcmp(table->arr[i].name, name) == 0) { // if strings are the same
-			return &table->arr[i];
+			return i;
 		}
 	}
 	printf("error: couldn't find \"%s\" in table\n", name);

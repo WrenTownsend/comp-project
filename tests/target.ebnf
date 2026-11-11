@@ -1,9 +1,12 @@
+main = expr ;
+
 expr = term, sub_expr ;
      sub_expr = "+", expr | "-", expr | "" ;
 
 term = factor, sub_term ;
      sub_term = "*", term | "/", term | "" ;
 
-factor = "test" | "234" ;
+//factor = "test" | "234" ;
+factor = "234";
 
 

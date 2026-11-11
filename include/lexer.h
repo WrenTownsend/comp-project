@@ -58,7 +58,7 @@ typedef struct {
 	table_t* table;
 } lexer_t;
 
-lexer_t* lexer_init(char*, table_t*);
+lexer_t* init_lexer(char*, table_t*);
 void lexer_reset(lexer_t*);
 // TODO: add free lexer function
 int next_token(lexer_t*);
